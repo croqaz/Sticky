@@ -33,6 +33,21 @@ def is_hot_comment(line):
     return line.startswith(b'#' + ICKY_MARKER)
 
 
+def is_stop_line(line):
+    """
+    Does this line contain an import, a class, or a function definition?
+    """
+    if line.startswith(b'from '):
+        return True
+    if line.startswith(b'import '):
+        return True
+    if line.startswith(b'class '):
+        return True
+    if line.startswith(b'def '):
+        return True
+    return False
+
+
 def extract_line_info(line):
     """
     Extract the data from a line containing a hot comment.
@@ -45,8 +60,17 @@ def extract_line_info(line):
 
 
 def extract_text_info(text):
+    """
+    Extract all relevant info from the hot comments of a Python source file.
+    """
     info = {}
     for line in text.split(b'\n'):
         if is_hot_comment(line):
             info.update(extract_line_info(line))
+        elif is_stop_line(line):
+            break
     return info
+
+
+def inject_sticky_info(text, info):
+    pass
