@@ -27,8 +27,8 @@ def test_hash_text():
 
 
 def test_is_hot_comment():
-    assert is_hot_comment(b'#-ab')
-    assert is_hot_comment(b'#- ab')
+    assert is_hot_comment(b'#-ab: y-')
+    assert is_hot_comment(b'#- ab: n -')
     assert not is_hot_comment(b'x')
     assert not is_hot_comment(b'#')
     assert not is_hot_comment(b'#-*- coding: ascii -*-')
@@ -42,6 +42,20 @@ def test_is_stop_line():
 
 
 def test_extract_info():
-    txt = b"#- rev: 1\n#- hash: QWE\n\nimport sticky\nsticky.icky()\n\n#- rev: 2\n\nprint('Aha')\n"
+    txt = b"#- rev: 1 -\n#- hash: QWE -\n\nimport sticky\nsticky.icky()\n\n#- rev: 2 -\n\nprint('Aha')\n"
     nfo = extract_text_info(txt)
     assert nfo == {b'rev': b'1', b'hash': b'QWE'}
+
+
+def test_split_script():
+    txt = b"#- rev: 1 -\n#- hash: QWE -\n\nimport sticky\nsticky.icky()\n\n#- rev: 2 -\n\nprint('Aha')\n"
+    head, tail = split_py_source_file(txt)
+    assert head + tail == txt
+    assert head.startswith(b'#- ')
+    assert tail.startswith(b'import ')
+
+
+# def test_icky():
+#     txt = b'#!/usr/bin/python\n\nimport os\n\nprint("Aha")\n'
+#     info = extract_text_info(txt)
+#     fin = inject_sticky_info(txt, info)

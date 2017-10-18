@@ -1,11 +1,14 @@
 
-# import re
+import re
 from hashlib import sha1
 from inspect import stack as stacks
 from binascii import b2a_base64 as base64
 
 HASH_LENGTH = 6
-ICKY_MARKER = b'-'
+ICKY_MARKER_START = b'-'
+ICKY_MARKER_FINIS = b'-'
+
+MATCHER = re.compile(b'^([\s\S]+?)(?:from \w|import \w|class \w|def \w)')
 
 
 def locate_file():
@@ -39,7 +42,9 @@ def is_hot_comment(line):
     """
     Does this line contain a hot comment?
     """
-    maybe = line.startswith(b'#' + ICKY_MARKER)
+    maybe = b':' in line and \
+        line.endswith(ICKY_MARKER_FINIS) and \
+        line.startswith(b'#' + ICKY_MARKER_START)
     return maybe and not is_shebang_comment(line) and \
         not is_encoding_comment(line)
 
@@ -63,8 +68,9 @@ def extract_line_info(line):
     """
     Extract the data from a line containing a hot comment.
     """
-    comm_len = len(ICKY_MARKER) + 1
-    info = line[comm_len:].strip().split(b':')
+    a_len = len(ICKY_MARKER_START) + 1
+    b_len = 0 - len(ICKY_MARKER_FINIS)
+    info = line[a_len:b_len].strip().split(b':')
     key = info[0]
     val = b':'.join(i.strip() for i in info[1:])
     return {key: val}
@@ -81,3 +87,14 @@ def extract_text_info(text):
         elif is_stop_line(line):
             break
     return info
+
+
+def split_py_source_file(text):
+    """
+    Split Python source file in head and tail;
+    The head ends where the actual Python code starts, with imports or defines;
+    The tail is the rest of the text.
+    """
+    match = re.match(MATCHER, text)
+    found = match.groups()[0]
+    return text[:len(found)], text[len(found):]
