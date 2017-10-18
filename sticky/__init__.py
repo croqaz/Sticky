@@ -1,5 +1,5 @@
 
-import re
+# import re
 from hashlib import sha1
 from inspect import stack as stacks
 from binascii import b2a_base64 as base64
@@ -10,7 +10,8 @@ ICKY_MARKER = b'-'
 
 def locate_file():
     """
-    Search the upper stacks for the first Python file different then the current file.
+    Search the upper stacks for the first Python file different
+    than the current file.
     """
     for upper_stack in stacks()[1:]:
         fname = upper_stack.filename
@@ -26,11 +27,21 @@ def hash_text(text):
     return raw[:HASH_LENGTH].upper()
 
 
+def is_shebang_comment(line):
+    return line.startswith(b'#!') and b'/usr/bin/' in line
+
+
+def is_encoding_comment(line):
+    return line.startswith(b'#') and b'coding' in line
+
+
 def is_hot_comment(line):
     """
     Does this line contain a hot comment?
     """
-    return line.startswith(b'#' + ICKY_MARKER)
+    maybe = line.startswith(b'#' + ICKY_MARKER)
+    return maybe and not is_shebang_comment(line) and \
+        not is_encoding_comment(line)
 
 
 def is_stop_line(line):
@@ -70,7 +81,3 @@ def extract_text_info(text):
         elif is_stop_line(line):
             break
     return info
-
-
-def inject_sticky_info(text, info):
-    pass

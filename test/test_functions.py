@@ -31,6 +31,7 @@ def test_is_hot_comment():
     assert is_hot_comment(b'#- ab')
     assert not is_hot_comment(b'x')
     assert not is_hot_comment(b'#')
+    assert not is_hot_comment(b'#-*- coding: ascii -*-')
 
 
 def test_is_stop_line():

@@ -7,7 +7,7 @@ clean-pyc:
 	find . -name '*~' -exec rm -f  {} +
 
 lint:
-	${ENV}/flake8 stones
+	${ENV}/flake8 sticky
 
 tests:
 	${ENV}/pytest -ra -s -v test/
