@@ -1,4 +1,5 @@
 
+import re
 import os
 import sys
 import pytest
@@ -6,17 +7,31 @@ sys.path.insert(1, os.getcwd())
 from sticky import *
 
 
+def replace_hash(text):
+    return re.sub('hash: .{6} ', 'hash: H ', text)
+
+
 @pytest.fixture(scope='module', params=[
+    ('# flake8: noqa\nfrom os import *\nprint("Aha")',
+     '# flake8: noqa\n#- rev: v1 -\n#- hash: H -\n\nfrom os import *\nprint("Aha")'),
     ('import os\n\nprint("Aha")',
-     '\n\n#- rev: 1 -\n#- hash: E/QCEY -\n\nimport os\n\nprint("Aha")'),
+     '\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")'),
     ('#!/usr/bin/python\n\nimport os\n\nprint("Aha")\n',
-     '#!/usr/bin/python\n\n#- rev: 1 -\n#- hash: ADVG5T -\n\nimport os\n\nprint("Aha")\n'),
+     '#!/usr/bin/python\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
     ('#! /usr/bin/python\n\nimport os\n\nprint("Aha")\n',
-     '#! /usr/bin/python\n\n#- rev: 1 -\n#- hash: DJUYSX -\n\nimport os\n\nprint("Aha")\n'),
+     '#! /usr/bin/python\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
     ('#!/usr/bin/env python\n\nimport os\n\nprint("Aha")\n',
-     '#!/usr/bin/env python\n\n#- rev: 1 -\n#- hash: LX+KQY -\n\nimport os\n\nprint("Aha")\n'),
+     '#!/usr/bin/env python\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
     ('#!/usr/bin/python\n# coding: latin-1\n\nimport os\n\nprint("Aha")\n',
-     '#!/usr/bin/python\n# coding: latin-1\n\n#- rev: 1 -\n#- hash: DVL9Q3 -\n\nimport os\n\nprint("Aha")\n'),
+     '#!/usr/bin/python\n# coding: latin-1\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
+    ('\n# -*- coding: ascii -*-\n\nimport os\n\nprint("Aha")\n',
+     '\n# -*- coding: ascii -*-\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
+    ('\n#- rev: 6 -\nimport os\n\nprint("Aha")',
+     '\n#- rev: 7 -\n#- hash: H -\n\nimport os\n\nprint("Aha")'),
+    ('\n#- rev: v8 -\n#- hash: H -\nimport os\n\nprint("Aha")',
+     '\n#- rev: v9 -\n#- hash: H -\n\nimport os\n\nprint("Aha")'),
+    ('\n# -*- coding: ascii -*-\n\n#- rev: r2 -\n#- hash: H -\nimport os\n\nprint("Aha")',
+     '\n# -*- coding: ascii -*-\n#- rev: r3 -\n#- hash: H -\n\nimport os\n\nprint("Aha")'),
 ])
 def test_pairs(request):
     """
@@ -26,7 +41,8 @@ def test_pairs(request):
 
 
 def test_icky(test_pairs):
-    txt = test_pairs[0]
-    info = extract_text_info(txt)
-    fin = inject_sticky_info(txt, info)
-    assert fin == test_pairs[1]
+    text = test_pairs[0]
+    head, tail = split_py_source_file(text)
+    head, info = extract_head_info(head)
+    fin = inject_sticky_info(head, tail, info)
+    assert replace_hash(fin) == test_pairs[1]

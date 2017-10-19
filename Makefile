@@ -9,5 +9,5 @@ clean-pyc:
 lint:
 	${ENV}/flake8 sticky
 
-tests:
-	${ENV}/pytest -ra -s -v test/
+test:
+	${ENV}/pytest -ra -s -v tests/

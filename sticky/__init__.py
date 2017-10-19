@@ -1,3 +1,8 @@
+"""
+This file is ickyfied. Obviously.
+"""
+#- rev: v1 -
+#- hash: 7AOK6H -
 
 import re
 from hashlib import sha1
@@ -37,9 +42,9 @@ def increment_rev(text):
     """
     if text[0].isalpha():
         rev = int(text[1:])
+        return text[0] + str(rev + 1)
     else:
-        rev = int(text)
-    return rev + 1
+        return str(int(text) + 1)
 
 
 def is_shebang_comment(line):
@@ -61,21 +66,6 @@ def is_hot_comment(line):
         not is_encoding_comment(line)
 
 
-def is_stop_line(line):
-    """
-    Does this line contain an import, a class, or a function definition?
-    """
-    if line.startswith('from '):
-        return True
-    if line.startswith('import '):
-        return True
-    if line.startswith('class '):
-        return True
-    if line.startswith('def '):
-        return True
-    return False
-
-
 def extract_line_info(line):
     """
     Extract the data from a line containing a hot comment.
@@ -88,17 +78,18 @@ def extract_line_info(line):
     return {key: val}
 
 
-def extract_text_info(text):
+def extract_head_info(head):
     """
     Extract all relevant info from the hot comments of a Python source file.
     """
     info = {}
-    for line in text.split('\n'):
+    text = []
+    for line in head.rstrip().split('\n'):
         if is_hot_comment(line):
             info.update(extract_line_info(line))
-        elif is_stop_line(line):
-            break
-    return info
+        else:
+            text.append(line)
+    return '\n'.join(text), info
 
 
 def split_py_source_file(text):
@@ -114,20 +105,35 @@ def split_py_source_file(text):
     return text[:len(found)], text[len(found):]
 
 
-def inject_sticky_info(text, old):
+def inject_sticky_info(head, tail, old):
     """
     Merge text with the info and write the result in output file.
     """
-    head, tail = split_py_source_file(text)
-    hash = hash_text(text)
+    rev = old.get('rev', 'v0')
+    hash = hash_text(head + tail)
     if hash != old.get('hash'):
-        rev = increment_rev(old.get('rev', 'v0'))
+        rev = increment_rev(rev)
     info = {
         'rev': rev,
         'hash': hash,
         'start': ICKY_MARKER_START,
         'finis': ICKY_MARKER_FINIS,
     }
-    icky = '\n\n#{start} rev: {rev} {finis}\n' \
+    icky = '\n#{start} rev: {rev} {finis}\n' \
            '#{start} hash: {hash} {finis}\n\n'.format(**info)
     return head.rstrip() + icky + tail
+
+
+def icky(fname=None):
+    if not fname:
+        fname = locate_file()
+        if fname:
+            print('Ickyfying ::', fname)
+        else:
+            print('Cannot locate file to ickyfy :(')
+            return
+    text = open(fname, 'r').read()
+    head, tail = split_py_source_file(text)
+    head, info = extract_head_info(head)
+    with open(fname, 'w') as out_file:
+        out_file.write(inject_sticky_info(head, tail, info))
