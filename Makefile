@@ -10,4 +10,4 @@ lint:
 	${ENV}/flake8 sticky
 
 test:
-	${ENV}/pytest -ra -s -v tests/
+	${ENV}/pytest -ra -sv tests/
