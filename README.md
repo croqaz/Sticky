@@ -1,6 +1,6 @@
 
 # Sticky :question: :exclamation:
-[![Build Status](https://travis-ci.org/croqaz/Sticky.svg?branch=master)](https://travis-ci.org/croqaz/Sticky)
+[![Build Status](https://travis-ci.org/croqaz/Sticky.svg?branch=master)](https://travis-ci.org/croqaz/Sticky) [![codecov](https://codecov.io/gh/croqaz/Sticky/branch/master/graph/badge.svg)](https://codecov.io/gh/croqaz/Sticky)
 
 ## What is this ?
 
@@ -55,4 +55,6 @@ That's it.
 
 ---
 
-Released under the [MIT license](https://raw.githubusercontent.com/croqaz/a-extractor/master/LICENSE).
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+Copyright (c) 2017 Cristi Constantin.

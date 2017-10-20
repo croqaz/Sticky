@@ -1,0 +1,8 @@
+
+# Dev lint code
+flake8
+# Dev test code
+pytest
+pytest-cov
+# codecov.io
+codecov
