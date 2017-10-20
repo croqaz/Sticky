@@ -110,7 +110,7 @@ def inject_sticky_info(head, tail, old):
     Merge text with the info and write the result in output file.
     """
     rev = old.get('rev', 'v0')
-    hash = hash_text(head + tail)
+    hash = hash_text(tail)
     if hash != old.get('hash'):
         rev = increment_rev(rev)
     info = {
