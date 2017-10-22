@@ -9,5 +9,8 @@ clean-pyc:
 lint:
 	${ENV}/flake8 sticky
 
+coverage:
+	${ENV}/pytest --cov-report term --cov=sticky tests/
+
 test:
-	${ENV}/pytest -ra -sv tests/
+	${ENV}/pytest -ra --capture=no --verbose tests/
