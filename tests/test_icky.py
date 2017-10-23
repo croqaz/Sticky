@@ -22,8 +22,6 @@ def replace_hash(text):
      '#! /usr/bin/python\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
     ('#!/usr/bin/env python\n\nimport os\n\nprint("Aha")\n',
      '#!/usr/bin/env python\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
-    ('#!/usr/bin/python\n# coding: latin-1\n\nimport os\n\nprint("Aha")\n',
-     '#!/usr/bin/python\n# coding: latin-1\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
     ('\n# -*- coding: ascii -*-\n\nimport os\n\nprint("Aha")\n',
      '\n# -*- coding: ascii -*-\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
     ('\n#- rev: 6 -\nimport os\n\nprint("Aha")',
@@ -40,7 +38,48 @@ def test_pairs(request):
     return request.param
 
 
-def test_icky(test_pairs):
-    src = Source(text=test_pairs[0])
+def test_inject(test_pairs):
+    src = Source(text=test_pairs[0], marker_a='-', marker_z='-')
     fin = src.inject_sticky_info()
     assert replace_hash(fin) == test_pairs[1]
+
+
+def test_save_header():
+    """
+    Run save header a few times to see that the revision is stable
+    """
+    fname = 'tests/fixtures/deep/a.py'
+    initial_text = open('tests/fixtures/deep/a.py').read()
+    src = Source(fname)
+    assert src.head == '#!/usr/bin/python\n\n' and 'Trap' in src.tail
+    src.save_header()
+    after_text = open('tests/fixtures/deep/a.py').read()
+    Source(fname).save_header()
+    assert open('tests/fixtures/deep/a.py').read() == after_text
+    Source(fname).save_header()
+    assert open('tests/fixtures/deep/a.py').read() == after_text
+    # Restore
+    open('tests/fixtures/deep/a.py', 'w').write(initial_text)
+
+
+@pytest.fixture(scope='module', params=[
+    'tests/fixtures/b.py',
+    'tests/fixtures/c.py',
+    'tests/fixtures/d.py',
+])
+def test_file(request):
+    """
+    Fixture that files to be tested.
+    """
+    return request.param
+
+
+def test_sources(test_file):
+    """
+    All fixture files have the same body, only the header is different
+    """
+    src = Source(test_file, marker_a='<<', marker_z='>>')
+    assert src.head.startswith('#!') and src.head.endswith('\n\n')
+    assert src.tail.startswith('import os')
+    fin = src.inject_sticky_info()
+    assert '#<< hash: 4XWL6Y >>\n' in fin

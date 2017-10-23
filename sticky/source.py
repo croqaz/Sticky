@@ -1,4 +1,7 @@
 
+#- rev: v1 -
+#- hash: G6SI3P -
+
 from .util import locate_file, hash_text, increment_rev
 from .util import split_py_source_file, extract_head_info
 from .constant import MARKER_A, MARKER_Z, HASH_LEN
@@ -9,6 +12,11 @@ class Source:
     This class represents a source file text, that must be `ickyfied`
     """
     def __init__(self, fname=None, text='', **options):
+        # Save extra options
+        self.marker_a = options.get('marker_a', MARKER_A)
+        self.marker_z = options.get('marker_z', MARKER_Z)
+        self.hash_len = options.get('hash_len', HASH_LEN)
+        # Save text
         if text:
             self.fname = fname
             self.head, self.tail = split_py_source_file(text)
@@ -20,10 +28,6 @@ class Source:
             self.fname = fname
             text = open(fname, 'r').read()
             self.head, self.tail = split_py_source_file(text)
-        # Save extra options
-        self.marker_a = options.get('marker_a', MARKER_A)
-        self.marker_z = options.get('marker_z', MARKER_Z)
-        self.hash_len = options.get('hash_len', HASH_LEN)
 
     def inject_sticky_info(self):
         """
@@ -42,7 +46,7 @@ class Source:
         }
         icky = '\n#{start} rev: {rev} {finis}\n' \
                '#{start} hash: {hash} {finis}\n\n'.format(**info)
-        return head.rstrip() + icky + self.tail
+        return head.rstrip() + icky + self.tail.lstrip()
 
     def save_header(self):
         """

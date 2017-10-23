@@ -1,8 +1,9 @@
 """
 This module contains pure functions.
 """
+#- rev: v1 -
+#- hash: BUOUL+ -
 
-import re
 import os
 from hashlib import sha1
 from inspect import stack as stacks
@@ -12,8 +13,6 @@ from .constant import MARKER_A, MARKER_Z, HASH_LEN
 
 __all__ = ('locate_file', 'iter_files', 'hash_text', 'increment_rev',
            'is_hot_comment', 'split_py_source_file', 'extract_head_info')
-
-MATCHER = re.compile('^([\s\S]+?)(?:from [\.\w]|import \w|class \w|def \w)')
 
 
 def locate_file():
@@ -40,7 +39,7 @@ def iter_files(source):
             for src in files:
                 if os.path.splitext(src)[-1] not in exts:
                     continue
-                fname = '{}/{}'.format(root, src)
+                fname = os.path.join(root, src)
                 if not os.path.getsize(fname):
                     continue
                 yield fname
@@ -77,19 +76,6 @@ def is_encoding_comment(line):
     return line.startswith('#') and 'coding' in line
 
 
-def split_py_source_file(text):
-    """
-    Split Python source file in head and tail;
-    The head ends where the actual Python code starts, with imports or defines;
-    The tail is the rest of the text.
-    """
-    match = re.match(MATCHER, text)
-    if not match:
-        return '', text
-    found = match.groups()[0]
-    return text[:len(found)], text[len(found):]
-
-
 def is_hot_comment(line, marker_a=MARKER_A, marker_z=MARKER_Z):
     """
     Does this line contain a hot comment?
@@ -98,6 +84,30 @@ def is_hot_comment(line, marker_a=MARKER_A, marker_z=MARKER_Z):
         line.startswith('#' + marker_a) and line.endswith(marker_z)
     return maybe and not is_shebang_comment(line) and \
         not is_encoding_comment(line)
+
+
+def split_py_source_file(text):
+    """
+    Split Python source file in head and tail;
+    The head ends where the actual Python code starts, with imports or defines;
+    The tail is the rest of the text.
+    """
+    found = []
+    comm = False
+    for line in text.splitlines(True):
+        if line.strip():
+            if line.startswith('#'):
+                found.append(line)
+                continue
+            if line.startswith('"""') or line.startswith("'''"):
+                comm = not comm
+                found.append(line)
+                continue
+            if not comm:
+                break
+        found.append(line)
+    head = ''.join(found)
+    return head, text[len(head):]
 
 
 def extract_line_info(line, marker_a=MARKER_A, marker_z=MARKER_Z):

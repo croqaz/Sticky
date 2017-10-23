@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name = 'sticky',
-    version = '0.1.1',
+    version = '0.2.0',
     author = 'Cristi Constantin',
     author_email = 'cristi.constantin@live.com',
     description = 'Library for adding comment headers inside Python source code files',
@@ -17,6 +17,11 @@ setup(
     extras_require = {
         'dev': ['flake8', 'codecov'],
         'test': ['pytest', 'pytest-cov'],
+    },
+    entry_points = {
+        'console_scripts': [
+            'sticky=sticky.cli:main'
+        ]
     },
     classifiers=[
         'Development Status :: 4 - Beta',

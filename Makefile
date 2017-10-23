@@ -17,3 +17,6 @@ coverage:
 
 test:
 	${ENV}/pytest -ra --capture=no --verbose tests/
+
+icky:
+	${ENV}/python -m sticky.cli -s sticky/
