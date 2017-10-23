@@ -41,8 +41,6 @@ def test_pairs(request):
 
 
 def test_icky(test_pairs):
-    text = test_pairs[0]
-    head, tail = split_py_source_file(text)
-    head, info = extract_head_info(head)
-    fin = inject_sticky_info(head, tail, info)
+    src = Source(text=test_pairs[0])
+    fin = src.inject_sticky_info()
     assert replace_hash(fin) == test_pairs[1]

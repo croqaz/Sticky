@@ -6,6 +6,9 @@ clean-pyc:
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f  {} +
 
+update:
+	${ENV}/pip install -U -r requirements-dev.txt
+
 lint:
 	${ENV}/flake8 sticky
 

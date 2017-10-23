@@ -3,8 +3,9 @@ from setuptools import setup
 
 setup(
     name = 'sticky',
-    version = '0.1.0',
+    version = '0.1.1',
     author = 'Cristi Constantin',
+    author_email = 'cristi.constantin@live.com',
     description = 'Library for adding comment headers inside Python source code files',
     keywords = 'sticky header comment',
     url = 'https://github.com/croqaz/Sticky',
@@ -27,5 +28,7 @@ setup(
         'Programming Language :: Python :: 3 :: Only',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Topic :: Software Development',
+        'Topic :: Utilities',
     ]
 )

@@ -4,6 +4,7 @@ import sys
 import pytest
 sys.path.insert(1, os.getcwd())
 from sticky import *
+from sticky.constant import HASH_LEN
 
 
 def test_locate_file():
@@ -20,10 +21,10 @@ def test_locate_file():
 def test_hash_text():
     h = hash_text('a')
     assert h.isupper()
-    assert len(h) == HASH_LENGTH
+    assert len(h) == HASH_LEN
     h = hash_text('qwertyuiop ASDFGHJKL')
     assert h.isupper()
-    assert len(h) == HASH_LENGTH
+    assert len(h) == HASH_LEN
 
 
 def test_increment_rev():
