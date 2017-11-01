@@ -1,6 +1,6 @@
 
 # Sticky :question: :exclamation:
-[![Build Status](https://travis-ci.org/croqaz/Sticky.svg?branch=master)](https://travis-ci.org/croqaz/Sticky) [![codecov](https://codecov.io/gh/croqaz/Sticky/branch/master/graph/badge.svg)](https://codecov.io/gh/croqaz/Sticky)
+[![Build Status](https://travis-ci.org/croqaz/Sticky.svg?branch=master)](https://travis-ci.org/croqaz/Sticky) [![codecov](https://codecov.io/gh/croqaz/Sticky/branch/master/graph/badge.svg)](https://codecov.io/gh/croqaz/Sticky) ![Python 3.5](https://img.shields.io/badge/python-3.5-blue.svg)
 
 ## What is this ?
 
@@ -25,7 +25,7 @@ import os
 print('Yuck')
 ```
 
-That's it! And it's customisable. You could also add:
+The header is customisable. You could also add:
 
 * a copyright in all your files
 * the last username that changed the file
@@ -55,6 +55,6 @@ That's it.
 
 ---
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 Copyright (c) 2017 Cristi Constantin.
