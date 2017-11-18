@@ -3,12 +3,12 @@ from setuptools import setup
 
 setup(
     name = 'sticky',
-    version = '0.2.0',
+    version = '0.2.1',
     author = 'Cristi Constantin',
     author_email = 'cristi.constantin@live.com',
     description = 'Library for adding comment headers inside Python source code files',
     keywords = 'sticky header comment',
-    url = 'https://github.com/croqaz/Sticky',
+    url = 'https://github.com/ShinyTrinkets/Sticky',
     license = 'MIT',
     packages = ['sticky', 'tests'],
     include_package_data = True,

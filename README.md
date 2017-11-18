@@ -1,6 +1,6 @@
 
 # Sticky :question: :exclamation:
-[![Build Status](https://travis-ci.org/croqaz/Sticky.svg?branch=master)](https://travis-ci.org/croqaz/Sticky) [![codecov](https://codecov.io/gh/croqaz/Sticky/branch/master/graph/badge.svg)](https://codecov.io/gh/croqaz/Sticky) ![Python 3.5](https://img.shields.io/badge/python-3.5-blue.svg)
+[![Build Status](https://travis-ci.org/croqaz/Sticky.svg?branch=master)](https://travis-ci.org/croqaz/Sticky) [![codecov](https://codecov.io/gh/croqaz/Sticky/branch/master/graph/badge.svg)](https://codecov.io/gh/croqaz/Sticky) ![Python 3.5](https://img.shields.io/badge/python-3.5-blue.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ## What is this ?
 
@@ -52,9 +52,3 @@ If old headers are found, the HASH of tail is checked with the HASH from the old
 But if the hashes differ, the revision is incremented and the new "sticky" header is written in the source file.
 
 That's it.
-
----
-
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-
-Copyright (c) 2017 Cristi Constantin.
