@@ -1,6 +1,6 @@
 
 # Sticky :question: :exclamation:
-[![Build Status](https://travis-ci.org/croqaz/Sticky.svg?branch=master)](https://travis-ci.org/croqaz/Sticky) [![codecov](https://codecov.io/gh/croqaz/Sticky/branch/master/graph/badge.svg)](https://codecov.io/gh/croqaz/Sticky) ![Python 3.5](https://img.shields.io/badge/python-3.5-blue.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/ShinyTrinkets/Sticky.svg?branch=master)](https://travis-ci.org/ShinyTrinkets/Sticky) [![codecov](https://codecov.io/gh/ShinyTrinkets/Sticky/branch/master/graph/badge.svg)](https://codecov.io/gh/ShinyTrinkets/Sticky) ![Python 3.5](https://img.shields.io/badge/python-3.5-blue.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 ## What is this ?
 
