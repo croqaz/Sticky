@@ -1,6 +1,6 @@
 
-#- rev: v1 -
-#- hash: ASGKJC -
+#- rev: v2 -
+#- hash: MEXT/M -
 
 HASH_LEN = 6
 # Start hot comment

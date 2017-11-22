@@ -1,10 +1,9 @@
 """
-This module contains pure functions.
-They are designed to be composed together.
+This module contains pure functions, dealing with cycling files,
+analyzing and building "sticky" headers.
 """
-
-#- rev: v1 -
-#- hash: BUOUL+ -
+#- rev: v2 -
+#- hash: VH+MNY -
 
 import os
 from hashlib import sha1

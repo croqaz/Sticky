@@ -1,6 +1,6 @@
 
-#- rev: v1 -
-#- hash: G6SI3P -
+#- rev: v2 -
+#- hash: C2DBWO -
 
 from .util import hash_text, increment_rev
 from .util import split_py_source_file, build_head_info
