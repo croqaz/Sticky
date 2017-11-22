@@ -1,32 +1,25 @@
 """
 This module contains pure functions.
+They are designed to be composed together.
 """
+
 #- rev: v1 -
 #- hash: BUOUL+ -
 
 import os
 from hashlib import sha1
-from inspect import stack as stacks
 from binascii import b2a_base64 as base64
 from .constant import MARKER_A, MARKER_Z, HASH_LEN
 
 
-__all__ = ('locate_file', 'iter_files', 'hash_text', 'increment_rev',
-           'is_hot_comment', 'split_py_source_file', 'extract_head_info')
-
-
-def locate_file():
-    """
-    Search the upper stacks for the first Python file different
-    than the current file.
-    """
-    for upper_stack in stacks()[1:]:
-        fname = upper_stack.filename
-        if fname != __file__ and fname[-3:] == '.py':
-            return fname
+__all__ = ('iter_files', 'hash_text', 'increment_rev',
+           'is_hot_comment', 'split_py_source_file', 'build_head_info')
 
 
 def iter_files(source):
+    """
+    Lazy iterate a folder in depth and return the Python source files.
+    """
     # WARNING: Stickyfying a folder with photos, or documents
     # will DESTROY your photos and documents!!
     # Not a good idea to stickyfy other types of files
@@ -50,7 +43,7 @@ def iter_files(source):
 
 def hash_text(text, hash_len=HASH_LEN):
     """
-    Hash text and return the first characters.
+    Hash text using SHA1 and clip to the desired length.
     """
     sha = sha1(text.encode('utf')).digest()
     raw = base64(sha).decode('utf')
@@ -60,6 +53,13 @@ def hash_text(text, hash_len=HASH_LEN):
 def increment_rev(text):
     """
     Increment revision number.
+    The revision consists of 1 caracter followed by numbers,
+    or just numbers.
+
+    Examples:
+        increment_rev("v1") # v2
+        increment_rev("r2") # r3
+        increment_rev("9")  # 10
     """
     if text[0].isalpha():
         rev = int(text[1:])
@@ -69,16 +69,26 @@ def increment_rev(text):
 
 
 def is_shebang_comment(line):
+    """
+    Return True if the line is a shebang.
+    """
     return line.startswith('#!') and '/usr/bin/' in line
 
 
 def is_encoding_comment(line):
+    """
+    Return True if the line declares the encoding of a file.
+    """
     return line.startswith('#') and 'coding' in line
 
 
 def is_hot_comment(line, marker_a=MARKER_A, marker_z=MARKER_Z):
     """
-    Does this line contain a hot comment?
+    Return True if the line contains a "hot" comment.
+    A "hot" comment is in the form:
+        #- key: value -
+    For example:
+        #- hash: JHSNSV -
     """
     maybe = ':' in line and \
         line.startswith('#' + marker_a) and line.endswith(marker_z)
@@ -88,7 +98,7 @@ def is_hot_comment(line, marker_a=MARKER_A, marker_z=MARKER_Z):
 
 def split_py_source_file(text):
     """
-    Split Python source file in head and tail;
+    Split a Python source file into head and tail;
     The head ends where the actual Python code starts, with imports or defines;
     The tail is the rest of the text.
     """
@@ -112,7 +122,8 @@ def split_py_source_file(text):
 
 def extract_line_info(line, marker_a=MARKER_A, marker_z=MARKER_Z):
     """
-    Extract the data from a line containing a hot comment.
+    Extract the data from a line containing a "hot" comment.
+    The key and value are exploded and returned a dict.
     """
     a_len = len(marker_a) + 1
     b_len = 0 - len(marker_z)
@@ -122,9 +133,9 @@ def extract_line_info(line, marker_a=MARKER_A, marker_z=MARKER_Z):
     return {key: val}
 
 
-def extract_head_info(head, marker_a=MARKER_A, marker_z=MARKER_Z):
+def build_head_info(head, marker_a=MARKER_A, marker_z=MARKER_Z):
     """
-    Extract all relevant info from the hot comments of a Python source file.
+    Extract all relevant info from all the hot comments of a Python source file.
     """
     info = {}
     text = []

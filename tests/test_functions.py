@@ -8,17 +8,6 @@ from sticky.constant import HASH_LEN
 from sticky.util import is_shebang_comment, is_encoding_comment, extract_line_info
 
 
-def test_locate_file():
-    fname = '/test_functions.py'
-    assert locate_file().endswith(fname)
-    def wrap1():
-        return locate_file()
-    assert wrap1().endswith(fname)
-    def wrap2():
-        return wrap1()
-    assert wrap2().endswith(fname)
-
-
 def test_iter_files():
     dir = 'sticky'
     assert list(iter_files(dir + '/__init__.py')) == [dir + '/__init__.py']
@@ -43,7 +32,7 @@ def test_increment_rev():
     assert increment_rev('v3') == 'v4'
 
 
-def test_boring_comments():
+def test_is_boring_comment():
     assert is_shebang_comment('#!/usr/bin/python')
     assert is_shebang_comment('#! /usr/bin/python')
     assert is_shebang_comment('#!/usr/bin/env python')
@@ -65,9 +54,9 @@ def test_extract_line_info():
     assert extract_line_info('#<<  rev: 1  >>', '<<', '>>') == {'rev': '1'}
 
 
-def test_extract_info():
+def test_build_info():
     txt = "#- rev: 1 -\n#- hash: QWE -\n\n"
-    hd, nfo = extract_head_info(txt)
+    hd, nfo = build_head_info(txt)
     assert hd == ''
     assert nfo == {'rev': '1', 'hash': 'QWE'}
 

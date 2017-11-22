@@ -10,26 +10,29 @@ from sticky import *
 def replace_hash(text):
     return re.sub('hash: .{6} ', 'hash: H ', text)
 
+def strip_head(text):
+    return re.sub('#< rev: .+ >', '', text.replace('#< hash: H >', ''))
+
 
 @pytest.fixture(scope='module', params=[
     ('# flake8: noqa\nfrom os import *\nprint("Aha")',
-     '# flake8: noqa\n#- rev: v1 -\n#- hash: H -\n\nfrom os import *\nprint("Aha")'),
+     '# flake8: noqa\n#< rev: v1 >\n#< hash: H >\n\nfrom os import *\nprint("Aha")'),
     ('import os\n\nprint("Aha")',
-     '\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")'),
+     '\n#< rev: v1 >\n#< hash: H >\n\nimport os\n\nprint("Aha")'),
     ('#!/usr/bin/python\n\nimport os\n\nprint("Aha")\n',
-     '#!/usr/bin/python\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
+     '#!/usr/bin/python\n#< rev: v1 >\n#< hash: H >\n\nimport os\n\nprint("Aha")\n'),
     ('#! /usr/bin/python\n\nimport os\n\nprint("Aha")\n',
-     '#! /usr/bin/python\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
+     '#! /usr/bin/python\n#< rev: v1 >\n#< hash: H >\n\nimport os\n\nprint("Aha")\n'),
     ('#!/usr/bin/env python\n\nimport os\n\nprint("Aha")\n',
-     '#!/usr/bin/env python\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
-    ('\n# -*- coding: ascii -*-\n\nimport os\n\nprint("Aha")\n',
-     '\n# -*- coding: ascii -*-\n#- rev: v1 -\n#- hash: H -\n\nimport os\n\nprint("Aha")\n'),
-    ('\n#- rev: 6 -\nimport os\n\nprint("Aha")',
-     '\n#- rev: 7 -\n#- hash: H -\n\nimport os\n\nprint("Aha")'),
-    ('\n#- rev: v8 -\n#- hash: H -\nimport os\n\nprint("Aha")',
-     '\n#- rev: v9 -\n#- hash: H -\n\nimport os\n\nprint("Aha")'),
-    ('\n# -*- coding: ascii -*-\n\n#- rev: r2 -\n#- hash: H -\nimport os\n\nprint("Aha")',
-     '\n# -*- coding: ascii -*-\n#- rev: r3 -\n#- hash: H -\n\nimport os\n\nprint("Aha")'),
+     '#!/usr/bin/env python\n#< rev: v1 >\n#< hash: H >\n\nimport os\n\nprint("Aha")\n'),
+    ('\n# -*- coding: ascii -*-\n\nimport os\n\n',
+     '\n# -*- coding: ascii -*-\n#< rev: v1 >\n#< hash: H >\n\nimport os\n\n'),
+    ('\n#< rev: 6 >\nimport os\n\nprint("Aha")',
+     '\n#< rev: 7 >\n#< hash: H >\n\nimport os\n\nprint("Aha")'),
+    ('\n#< rev: v8 >\n#< hash: H >\nimport os\n\nprint("Aha")',
+     '\n#< rev: v9 >\n#< hash: H >\n\nimport os\n\nprint("Aha")'),
+    ('\n# -*- coding: ascii -*-\n\n#< rev: r2 >\n#< hash: H >\nimport os\n\n#',
+     '\n# -*- coding: ascii -*-\n#< rev: r3 >\n#< hash: H >\n\nimport os\n\n#'),
 ])
 def test_pairs(request):
     """
@@ -39,9 +42,14 @@ def test_pairs(request):
 
 
 def test_inject(test_pairs):
-    src = Source(text=test_pairs[0], marker_a='-', marker_z='-')
+    # Default tmpl
+    src = Source(text=test_pairs[0], marker_a='<', marker_z='>')
     fin = src.inject_sticky_info()
     assert replace_hash(fin) == test_pairs[1]
+    # Without template, default markers
+    src = Source(text=test_pairs[0], marker_a='<', marker_z='>', head_tmpl='\n')
+    fin = src.inject_sticky_info()
+    assert fin.replace('\n', '') == strip_head(test_pairs[0]).replace('\n', '')
 
 
 def test_save_header():
