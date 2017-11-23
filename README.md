@@ -5,7 +5,7 @@
 > Library for adding "sticky" comment headers inside Python source code files.
 
 
-## Install
+## Installation
 
 This project uses [Python 3.5+](https://www.python.org/) and [pip](https://pip.pypa.io/). A [virtual environment](https://virtualenv.pypa.io/) is strongly encouraged.
 
@@ -14,11 +14,11 @@ $ pip install git+https://github.com/ShinyTrinkets/Sticky
 ```
 
 
-## What ?
+## Usage
 
 An example is worth 1000 words.
 
-Before:
+The source file, before:
 
 ```python
 import os
@@ -26,7 +26,13 @@ import os
 print('Yuck')
 ```
 
-After adding the default header:
+Call the Sticky library:
+
+```sh
+$ python3 -m sticky.cli -s yourfile.py
+```
+
+The file, after the default header was added:
 
 ```python
 #- rev: v1 -
@@ -37,7 +43,7 @@ import os
 print('Yuck')
 ```
 
-The header is customisable (work in progress). In the future, you might also add:
+The header is customizable (work in progress). In the future, you might also add:
 
 * a copyright in all your files
 * the last username that changed the file
@@ -53,7 +59,9 @@ This library is not trying to replace Git, or whatever version control system yo
 In case of a normal Python library, the "sticky" headears allow quick overview of the separate modules (files) from that library, based on the revision number.
 Also, in case of hundreds of modules, it's easy to automate the creation of standard headers inside all the files.
 
-But a better use-case is when the source file is shared in a place where versioning is not possible, or is hard to check. For example, a Gist-like/ Pastebin-like website, or an [IPFS](https://ipfs.io/)-like link. In that case, ideally the "sticky" header would consist of: the revision number, the name of the author, maybe an e-mail, but most important, a signature of that source file, easy to validate with the public key of the author.
+In this case, the development flow would be: lint the code, test the code. When it's ready to commit, call the "sticky icky" library to update the old comment headers.
+
+But a better use-case is when the source file is shared in a place where versioning is not possible, or is hard to check. For example, a Gist-like/ Pastebin-like website, or an [IPFS](https://ipfs.io/)-like link. In that case, ideally the "sticky" header would consist of: the revision number, the name of the author, maybe an e-mail, but most important, a verifiable signature of that source file, easy to validate with the public key of the author.
 
 
 ## How ?
