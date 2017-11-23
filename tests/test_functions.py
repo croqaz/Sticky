@@ -3,9 +3,19 @@ import os
 import sys
 import pytest
 sys.path.insert(1, os.getcwd())
-from sticky import *
+# from sticky import *
+from sticky.util import *
 from sticky.constant import HASH_LEN
+from sticky.util import is_hot_comment, is_python_file
 from sticky.util import is_shebang_comment, is_encoding_comment, extract_line_info
+
+
+def test_is_python_file():
+    dir = 'sticky'
+    assert is_python_file(dir + '/__init__.py')
+    assert is_python_file(dir + '/__version__.py')
+    assert not is_python_file('README.md')
+    assert not is_python_file('LICENSE')
 
 
 def test_iter_files():

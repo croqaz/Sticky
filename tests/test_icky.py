@@ -41,6 +41,11 @@ def test_pairs(request):
     return request.param
 
 
+def test_crash():
+    with pytest.raises(Exception):
+        src = Source(text='', fname=None)
+
+
 def test_inject(test_pairs):
     # Default tmpl
     src = Source(text=test_pairs[0], marker_a='<', marker_z='>')

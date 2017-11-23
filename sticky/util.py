@@ -2,8 +2,8 @@
 This module contains pure functions, dealing with cycling files,
 analyzing and building "sticky" headers.
 """
-#- rev: v2 -
-#- hash: VH+MNY -
+#- rev: v3 -
+#- hash: 8YBSJ2 -
 
 import os
 from hashlib import sha1
@@ -12,16 +12,32 @@ from .constant import MARKER_A, MARKER_Z, HASH_LEN
 
 
 __all__ = ('iter_files', 'hash_text', 'increment_rev',
-           'is_hot_comment', 'split_py_source_file', 'build_head_info')
+           'split_py_source_file', 'build_head_info')
+
+
+def is_python_file(fname):
+    """
+    Check if a specific file is a valid Python source file.
+    """
+    with open(fname, 'r') as fd:
+        try:
+            compile(fd.read(), fname, 'exec')
+            return True
+        except Exception:
+            return False
 
 
 def iter_files(source):
     """
-    Lazy iterate a folder in depth and return the Python source files.
+    Lazy iterate a folder in depth and return
+    the paths of all Python source files.
+
+    *DANGER*: Adding "sticky" headers to files like: photos, or documents
+    will DESTROY the photos and documents!!
+    To prevent this, 2 types of checks are made:
+    * the extension of the file must be ".py" (this is a fast check)
+    * the file is compiled to see if it has a valid sintax (slow check)
     """
-    # WARNING: Stickyfying a folder with photos, or documents
-    # will DESTROY your photos and documents!!
-    # Not a good idea to stickyfy other types of files
     exts = ['.py']
 
     if os.path.isfile(source):
@@ -29,6 +45,7 @@ def iter_files(source):
     elif os.path.isdir(source):
         for root, dirs, files in os.walk(source):
             for src in files:
+                # Ignore all unknown extensions
                 if os.path.splitext(src)[-1] not in exts:
                     continue
                 fname = os.path.join(root, src)

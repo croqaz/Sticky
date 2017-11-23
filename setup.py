@@ -1,14 +1,32 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
+# https://github.com/kennethreitz/setup.py ❤️ ✨ 🍰 ✨
+
+import os
 from setuptools import setup
 
+NAME = 'sticky'
+DESCRIPTION = 'Library for adding "sticky" comment headers inside Python source code files.'
+KEYWORDS = 'sticky header comment'
+URL = 'https://github.com/ShinyTrinkets/Sticky'
+AUTHOR = 'Cristi Constantin'
+EMAIL = 'cristi.constantin@live.com'
+
+here = os.path.abspath(os.path.dirname(__file__))
+about = {}
+
+with open(os.path.join(here, NAME, '__version__.py')) as f:
+    exec(f.read(), about)
+
 setup(
-    name = 'sticky',
-    version = '0.2.1',
-    author = 'Cristi Constantin',
-    author_email = 'cristi.constantin@live.com',
-    description = 'Library for adding comment headers inside Python source code files',
-    keywords = 'sticky header comment',
-    url = 'https://github.com/ShinyTrinkets/Sticky',
+    version = about['__version__'],
+    name = NAME,
+    description = DESCRIPTION,
+    keywords = KEYWORDS,
+    url = URL,
+    author = AUTHOR,
+    author_email = EMAIL,
     license = 'MIT',
     packages = ['sticky', 'tests'],
     include_package_data = True,
