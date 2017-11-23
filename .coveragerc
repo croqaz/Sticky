@@ -1,16 +1,20 @@
 [run]
 branch = True
 source = sticky
+omit = tests
 
 [report]
 ignore_errors = True
-omit = tests/fixtures/*
+
 exclude_lines =
     pragma: no cover
-    raise NotImplementedError.*
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError
+    raise NotImplementedError
     warnings\.warn.*
     __version__
     def __repr__
     def __str__
     def main()
+    # Don't complain if non-runnable code isn't run:
     if __name__ == .__main__.:
