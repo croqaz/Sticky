@@ -7,6 +7,7 @@ analyzing and building "sticky" headers.
 
 import os
 from hashlib import sha1
+from fnmatch import fnmatch
 from binascii import b2a_base64 as base64
 from .constant import MARKER_A, MARKER_Z, HASH_LEN
 
@@ -27,29 +28,44 @@ def is_python_file(fname):
             return False
 
 
-def iter_files(source):
+def is_candidate_file(fname, fpath, ignore_list):
+    """
+    Check if a specific file matches the criteria
+    to be added a "sticky" header.
+    Only Python extensions are allowed for now.
+    """
+    extensions = ['.py']
+    # Ignore all unknown extensions
+    if os.path.splitext(fname)[-1] not in extensions:
+        return False
+    # Ignore files matching the ignore list
+    for ign_pattern in ignore_list:
+        if fnmatch(fname, ign_pattern):
+            return False
+    # Ignore empty files like __init__.py
+    if not os.path.getsize(fpath):
+        return False
+    # Check file for valid syntax
+    if not is_python_file(fpath):
+        return False
+    return True
+
+
+def iter_files(source, ignore_list=[]):
     """
     Lazy iterate a folder in depth and return
     the paths of all Python source files.
-
-    *DANGER*: Adding "sticky" headers to files like: photos, or documents
-    will DESTROY the photos and documents!!
-    To prevent this, 2 types of checks are made:
-    * the extension of the file must be ".py" (this is a fast check)
-    * the file is compiled to see if it has a valid sintax (slow check)
+    Ignore all files that match the patterns
+    from the `ignore_list`.
     """
-    exts = ['.py']
-
     if os.path.isfile(source):
-        yield source
+        if is_candidate_file(source, source, ignore_list):
+            yield source
     elif os.path.isdir(source):
         for root, dirs, files in os.walk(source):
             for src in files:
-                # Ignore all unknown extensions
-                if os.path.splitext(src)[-1] not in exts:
-                    continue
                 fname = os.path.join(root, src)
-                if not os.path.getsize(fname):
+                if not is_candidate_file(src, fname, ignore_list):
                     continue
                 yield fname
             # Ignore known cache folders
