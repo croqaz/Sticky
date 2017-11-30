@@ -29,4 +29,4 @@ test:
 	${ENV}/pytest -ra --capture=no --verbose tests/
 
 icky:
-	${ENV}/python -m sticky.cli -s sticky/
+	${ENV}/python -m sticky.cli -s sticky/ -i __*__.*
