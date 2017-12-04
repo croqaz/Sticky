@@ -4,6 +4,8 @@
 
 > Library for adding "sticky" comment headers inside Python source code files.
 
+⚠️ **WORK IN PROGRESS, DON'T JUDGE** 🛑
+
 
 ## Installation
 
