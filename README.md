@@ -1,10 +1,11 @@
 
 # Sticky :question: :exclamation:
-[![Build Status](https://travis-ci.org/ShinyTrinkets/Sticky.svg?branch=master)](https://travis-ci.org/ShinyTrinkets/Sticky) [![codecov](https://codecov.io/gh/ShinyTrinkets/Sticky/branch/master/graph/badge.svg)](https://codecov.io/gh/ShinyTrinkets/Sticky) ![Python 3.5](https://img.shields.io/badge/python-3.5-blue.svg)
+[![Build Status](https://travis-ci.org/croqaz/Sticky.svg?branch=master)](https://travis-ci.org/croqaz/Sticky) [![codecov](https://codecov.io/gh/croqaz/Sticky/branch/master/graph/badge.svg)](https://codecov.io/gh/croqaz/Sticky) ![Python 3.5](https://img.shields.io/badge/python-3.5-blue.svg)
 
 > Library for adding "sticky" comment headers inside Python source code files.
 
-⚠️ **WORK IN PROGRESS, DON'T JUDGE** 🛑
+
+⚠️ **This library was an experiment and is no longer maintained; PLEASE DON'T JUDGE** 🛑
 
 
 ## Installation
@@ -12,7 +13,7 @@
 This project uses [Python 3.5+](https://www.python.org/) and [pip](https://pip.pypa.io/). A [virtual environment](https://virtualenv.pypa.io/) is strongly encouraged.
 
 ```sh
-$ pip install git+https://github.com/ShinyTrinkets/Sticky
+$ pip install git+https://github.com/croqaz/Sticky
 ```
 
 
